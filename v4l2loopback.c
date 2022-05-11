@@ -1992,18 +1992,26 @@ static int v4l2_loopback_open(struct file *file)
 {
 	struct v4l2_loopback_device *dev;
 	struct v4l2_loopback_opener *opener;
+
+	int err;
+
 	MARK();
 	dev = v4l2loopback_getdevice(file);
-	if (dev->open_count.counter >= dev->max_openers)
-		return -EBUSY;
+
+	if (atomic_fetch_inc(&dev->open_count) >= dev->max_openers) {
+		err = -EBUSY;
+		goto out;
+	}
+
 	/* kfree on close */
 	opener = kzalloc(sizeof(*opener), GFP_KERNEL);
-	if (opener == NULL)
-		return -ENOMEM;
+	if (opener == NULL) {
+		err = -ENOMEM;
+		goto out;
+	}
 
 	v4l2_fh_init(&opener->fh, video_devdata(file));
 	file->private_data = &opener->fh;
-	atomic_inc(&dev->open_count);
 
 	opener->timeout_image_io = dev->timeout_image_io;
 	dev->timeout_image_io = 0;
@@ -2021,6 +2029,10 @@ static int v4l2_loopback_open(struct file *file)
 	dprintk("opened dev:%p with image:%p\n", dev, dev ? dev->image : NULL);
 	MARK();
 	return 0;
+
+out:
+	atomic_dec(&dev->open_count);
+	return err;
 }
 
 static int v4l2_loopback_close(struct file *file)

@@ -2010,26 +2010,27 @@ static int v4l2_loopback_open(struct file *file)
 		goto out;
 	}
 
-	v4l2_fh_init(&opener->fh, video_devdata(file));
-	file->private_data = &opener->fh;
-
 	opener->timeout_image_io = dev->timeout_image_io;
 	dev->timeout_image_io = 0;
 
 	if (opener->timeout_image_io) {
-		int r = allocate_timeout_image(dev);
-
-		if (r < 0) {
+		err = allocate_timeout_image(dev);
+		if (err < 0) {
 			dprintk("timeout image allocation failed\n");
-			return r;
+			goto out_opener;
 		}
 	}
 
+	file->private_data = &opener->fh;
+	v4l2_fh_init(&opener->fh, video_devdata(file));
 	v4l2_fh_add(&opener->fh);
+
 	dprintk("opened dev:%p with image:%p\n", dev, dev ? dev->image : NULL);
 	MARK();
 	return 0;
 
+out_opener:
+	kfree(opener);
 out:
 	atomic_dec(&dev->open_count);
 	return err;

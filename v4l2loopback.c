@@ -436,7 +436,7 @@ enum opener_type {
 struct v4l2_loopback_opener {
 	enum opener_type type;
 	int vidioc_enum_frameintervals_calls;
-	int read_position; /* number of last processed frame + 1 or
+	unsigned int read_position; /* number of last processed frame + 1 or
 			    * write_position - 1 if reader went out of sync */
 	unsigned int reread_count;
 	struct v4l2_buffer *buffers;

@@ -379,7 +379,7 @@ struct v4l2_loopback_device {
 	unsigned long int imagesize; /* size of buffers data */
 	int buffers_number; /* should not be big, 4 is a good choice */
 	struct v4l2l_buffer buffers[MAX_BUFFERS]; /* inner driver buffers */
-	int used_buffers; /* number of the actually used buffers */
+	unsigned int used_buffers; /* number of the actually used buffers */
 	int max_openers; /* how many times can this device be opened */
 
 	int write_position; /* number of last written frame + 1 */

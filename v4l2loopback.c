@@ -2038,8 +2038,7 @@ static int v4l2_loopback_close(struct file *file)
 	if (WRITER == opener->type)
 		iswriter = 1;
 
-	atomic_dec(&dev->open_count);
-	if (dev->open_count.counter == 0) {
+	if (git_dec_return(&dev->open_count) == 0) {
 		del_timer_sync(&dev->sustain_timer);
 		del_timer_sync(&dev->timeout_timer);
 	}

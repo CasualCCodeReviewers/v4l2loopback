@@ -384,7 +384,7 @@ struct v4l2_loopback_device {
 	int buffers_number; /* should not be big, 4 is a good choice */
 	struct v4l2l_buffer buffers[MAX_BUFFERS]; /* inner driver buffers */
 	int used_buffers; /* number of the actually used buffers */
-	int max_openers; /* how many times can this device be opened */
+	int max_openers; /* how many times can this device be opened in paralell */
 
 	int write_position; /* number of last written frame + 1 */
 	struct list_head outbufs_list; /* buffers in output DQBUF order */
@@ -1555,7 +1555,7 @@ static int vidioc_reqbufs(struct file *file, void *fh,
 }
 
 /* returns buffer asked for;
- * give app as many buffers as it wants, if it less than MAX,
+ * give app as many buffers as it wants, if it is less than MAX,
  * but map them in our inner buffers
  * called on VIDIOC_QUERYBUF
  */

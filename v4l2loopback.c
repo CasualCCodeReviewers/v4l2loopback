@@ -1396,7 +1396,7 @@ static int vidioc_s_output(struct file *file, void *fh, unsigned int i)
 	if (!dev->announce_all_caps && !dev->ready_for_output)
 		return -ENOTTY;
 
-	if (i)
+	if (i != 0)
 		return -EINVAL;
 
 	return 0;

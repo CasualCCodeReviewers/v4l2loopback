@@ -1086,9 +1086,6 @@ static int vidioc_try_fmt_out(struct file *file, void *priv,
 
 		if (V4L2_FIELD_ANY == fmt->fmt.pix.field)
 			fmt->fmt.pix.field = V4L2_FIELD_NONE;
-
-		/* FIXXME: try_fmt should never modify the device-state */
-		dev->pix_format = fmt->fmt.pix;
 	}
 	return 0;
 }
@@ -1119,6 +1116,8 @@ static int vidioc_s_fmt_out(struct file *file, void *priv,
 		return ret;
 
 	if (!dev->ready_for_capture) {
+		dev->pix_format = fmt->fmt.pix;
+
 		dev->buffer_size = PAGE_ALIGN(dev->pix_format.sizeimage);
 		fmt->fmt.pix.sizeimage = dev->buffer_size;
 		ret = allocate_buffers(dev);

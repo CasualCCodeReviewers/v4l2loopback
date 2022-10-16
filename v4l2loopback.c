@@ -1562,7 +1562,7 @@ static int vidioc_reqbufs(struct file *file, void *fh,
 static int vidioc_querybuf(struct file *file, void *fh, struct v4l2_buffer *b)
 {
 	enum v4l2_buf_type type;
-	int index;
+	__u32 index;
 	struct v4l2_loopback_device *dev;
 	struct v4l2_loopback_opener *opener;
 
@@ -1623,7 +1623,7 @@ static int vidioc_qbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
 	struct v4l2_loopback_device *dev;
 	struct v4l2_loopback_opener *opener;
 	struct v4l2l_buffer *b;
-	int index;
+	__u32 index;
 
 	dev = v4l2loopback_getdevice(file);
 	opener = fh_to_opener(fh);
@@ -1732,7 +1732,8 @@ static int vidioc_dqbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
 {
 	struct v4l2_loopback_device *dev;
 	struct v4l2_loopback_opener *opener;
-	int index;
+	__u32 index;
+    int capture_index;
 	struct v4l2l_buffer *b;
 
 	dev = v4l2loopback_getdevice(file);
@@ -1744,10 +1745,11 @@ static int vidioc_dqbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
 
 	switch (buf->type) {
 	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
-		index = get_capture_buffer(file);
-		if (index < 0)
-			return index;
-		dprintkrw("capture DQBUF pos: %d index: %d\n",
+		capture_index = get_capture_buffer(file);
+		if (capture_index < 0)
+			return capture_index;
+		index = capture_index;
+		dprintkrw("capture DQBUF pos: %d index: %u\n",
 			  opener->read_position - 1, index);
 		if (!(dev->buffers[index].buffer.flags &
 		      V4L2_BUF_FLAG_MAPPED)) {

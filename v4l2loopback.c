@@ -1594,6 +1594,7 @@ static int vidioc_querybuf(struct file *file, void *fh, struct v4l2_buffer *b)
             https://github.com/umlaeute/v4l2loopback/issues/60 */
 	b->flags &= ~V4L2_BUF_FLAG_DONE;
 	b->flags |= V4L2_BUF_FLAG_QUEUED;
+	b->flags |= V4L2_BUF_FLAG_PREPARED;
 
 	return 0;
 }
@@ -1656,6 +1657,7 @@ static int vidioc_qbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
                     https://github.com/umlaeute/v4l2loopback/issues/60 */
 		buf->flags &= ~V4L2_BUF_FLAG_DONE;
 		buf->flags |= V4L2_BUF_FLAG_QUEUED;
+		buf->flags |= V4L2_BUF_FLAG_PREPARED;
 
 		wake_up_all(&dev->read_event);
 		return 0;
@@ -1756,6 +1758,8 @@ static int vidioc_dqbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
 		}
 		unset_flags(&dev->buffers[index]);
 		*buf = dev->buffers[index].buffer;
+		buf->flags &= ~V4L2_BUF_FLAG_MAPPED;
+		buf->flags |= V4L2_BUF_FLAG_PREPARED;
 		return 0;
 	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
 		b = list_entry(dev->outbufs_list.prev, struct v4l2l_buffer,
@@ -1765,6 +1769,8 @@ static int vidioc_dqbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
 		unset_flags(b);
 		*buf = b->buffer;
 		buf->type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
+		buf->flags &= ~V4L2_BUF_FLAG_MAPPED;
+		buf->flags |= V4L2_BUF_FLAG_PREPARED;
 		return 0;
 	default:
 		return -EINVAL;

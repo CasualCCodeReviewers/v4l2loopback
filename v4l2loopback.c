@@ -1495,7 +1495,7 @@ static int vidioc_reqbufs(struct file *file, void *fh,
 	dev = v4l2loopback_getdevice(file);
 	opener = fh_to_opener(fh);
 
-	dprintk("reqbufs: %d\t%d=%d\n", b->memory, b->count,
+	dprintk("reqbufs: %u\t%u=%d\n", b->memory, b->count,
 		dev->buffers_number);
 	if (opener->timeout_image_io) {
 		if (b->memory != V4L2_MEMORY_MMAP)

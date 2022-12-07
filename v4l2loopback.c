@@ -1536,7 +1536,7 @@ static int vidioc_reqbufs(struct file *file, void *fh,
 
 			/* after we update dev->used_buffers, buffers in outbufs_list will
 			 * correspond to dev->write_position + [0;b->count-1] range */
-			i = dev->write_position;
+			i = dev->write_position % b->count;
 			list_for_each_entry (pos, &dev->outbufs_list,
 					     list_head) {
 				dev->bufpos2index[i % b->count] =

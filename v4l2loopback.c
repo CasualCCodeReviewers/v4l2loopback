@@ -1150,7 +1150,7 @@ static int vidioc_s_fmt_overlay(struct file *file, void *priv,
 
 /* ------------------ PARAMs ----------------------- */
 
-/* get some data flow parameters, only capability, fps and readbuffers has
+/* get some data flow parameters, only capability, fps and readbuffers have
  * effect on this driver
  * called on VIDIOC_G_PARM
  */
@@ -1167,7 +1167,7 @@ static int vidioc_g_parm(struct file *file, void *priv,
 	return 0;
 }
 
-/* get some data flow parameters, only capability, fps and readbuffers has
+/* get some data flow parameters, only capability, fps and readbuffers have
  * effect on this driver
  * called on VIDIOC_S_PARM
  */

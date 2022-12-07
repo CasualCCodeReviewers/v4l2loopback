@@ -1179,19 +1179,22 @@ static int vidioc_s_parm(struct file *file, void *priv,
 	MARK();
 
 	dev = v4l2loopback_getdevice(file);
-	dprintk("vidioc_s_parm called frate=%d/%d\n",
-		parm->parm.capture.timeperframe.numerator,
-		parm->parm.capture.timeperframe.denominator);
 
 	switch (parm->type) {
 	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+		dprintk("vidioc_s_parm called frate=%u/%u\n",
+			parm->parm.capture.timeperframe.numerator,
+			parm->parm.capture.timeperframe.denominator);
 		if ((err = set_timeperframe(
 			     dev, &parm->parm.capture.timeperframe)) < 0)
 			return err;
 		break;
 	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+		dprintk("vidioc_s_parm called frate=%u/%u\n",
+			parm->parm.output.timeperframe.numerator,
+			parm->parm.output.timeperframe.denominator);
 		if ((err = set_timeperframe(
-			     dev, &parm->parm.capture.timeperframe)) < 0)
+			     dev, &parm->parm.output.timeperframe)) < 0)
 			return err;
 		break;
 	default:
